@@ -1,0 +1,89 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <ctime>
+#include <stdio.h>
+#include <time.h>
+
+using namespace std;
+
+
+// 星座
+class Seiza {
+	int max;
+
+private:
+	string name;
+	int ruckynumber;
+
+public:
+	Seiza(const char* a, int max) : name(a), ruckynumber() {}
+	void setName(const char* newName) { name = newName; }
+	string getName() { return name; }
+	void setRuckynumber(int max) { ruckynumber = rand() % max; }
+	int getRuckynumber() { return ruckynumber; }
+};
+
+// 星占い
+class Uranai {
+	enum { ruckymax = 10 };
+
+private:
+	vector<Seiza> stl;
+
+public:
+	Uranai() {
+		static const char* cname[] = {
+			"牡羊座", "牡牛座", "双子座", "蟹座",
+			"獅子座", "乙女座", "天秤座", "蠍座",
+			"射手座", "山羊座", "水瓶座", "魚座" };
+
+		srand(time(NULL));
+		for (size_t i = 0; i < sizeof(cname) / sizeof(cname[0]); ++i) {
+			stl.push_back(Seiza(cname[i], ruckymax));
+		}
+	}
+	void setRuckynumber() {
+		random_shuffle(stl.begin(), stl.end());
+		for (size_t i = 0; i < stl.size(); ++i) {
+			stl[i].setRuckynumber(ruckymax);
+			cout.width(2);
+			cout << i + 1 << "位 ";
+			cout.width(10);
+			cout << stl[i].getName() << " そんなあなたのラッキーナンバーは " << stl[i].getRuckynumber() << endl;
+		}
+	}
+};
+
+int main(int argc, char* args[])
+{
+	//日時
+	time_t t = time(NULL);
+	struct tm local;
+	localtime_s(&local, &t);
+	char buf[128];
+	strftime(buf, sizeof(buf), "%Y/%m/%d", &local);
+	printf("%s", buf) ;
+	cout<<"の運勢は"<<endl;
+
+	Uranai ast;
+	ast.setRuckynumber();
+
+	int s;
+
+	srand(time(NULL));
+	s = rand() % 100 + 1;
+	
+	if (s % 3 == 0)
+		cout << "じゃんけんグー" << endl;
+	if (s % 3 == 1)
+		cout << "じゃんけんチョキ" << endl;
+	if(s % 3 == 2)
+		cout << "じゃんけんパー" <<endl;
+
+
+	cout << "<<今日も一日元気に行ってらっしゃい！>>" << endl;
+	
+	return 0;
+}
